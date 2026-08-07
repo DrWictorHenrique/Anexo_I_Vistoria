@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Termo de Vistoria — montar anexo</title>
+<style>
+  :root{
+    --ink:#16202B; --azul:#1F4E79; --traco:#9AB3CC; --realce:#EEF3F9;
+    --mesa:#E3E6EA; --papel:#FFFFFF; --alerta:#B45309; --cinza:#6B7784;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--mesa);color:var(--ink);
+    font-family:"Segoe UI",Calibri,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    font-size:15px;line-height:1.45}
+
+  .barra{position:sticky;top:0;z-index:20;background:var(--papel);
+    border-bottom:1px solid var(--traco);box-shadow:0 1px 6px rgba(22,32,43,.08)}
+  .barra-int{max-width:1080px;margin:0 auto;padding:14px 20px}
+  .barra h1{font-size:15px;margin:0 0 2px;letter-spacing:.02em;text-transform:uppercase;
+    color:var(--azul);font-weight:700}
+  .barra p.intro{margin:0 0 12px;font-size:13px;color:var(--cinza)}
+
+  .recado{background:#FFF6E6;border:1px solid #E7C77E;border-radius:3px;
+    padding:9px 12px;font-size:13px;margin:0 0 13px;color:#6B4E10}
+  .recado b{color:#5A3F06}
+
+  .campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+  .campo label{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--cinza);margin-bottom:3px}
+  .campo input,.campo select{width:100%;padding:7px 9px;border:1px solid var(--traco);
+    border-radius:3px;font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+  .campo input:focus,.campo select:focus{outline:2px solid var(--azul);outline-offset:1px;border-color:var(--azul)}
+
+  .acoes{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px;align-items:center}
+  .btn{font:inherit;font-size:14px;padding:8px 15px;border-radius:3px;cursor:pointer;
+    border:1px solid var(--azul);background:#fff;color:var(--azul);font-weight:600;
+    position:relative;overflow:hidden;display:inline-block;line-height:1.45}
+  .btn:hover{background:var(--realce)}
+  .btn:focus-within,.btn:focus-visible{outline:2px solid var(--azul);outline-offset:2px}
+  .btn.principal{background:var(--azul);color:#fff}
+  .btn.principal:hover{background:#173F63}
+  .btn.discreto{border-color:var(--traco);color:var(--cinza);font-weight:500}
+  .btn.discreto:hover{background:#F3F5F7}
+  .btn.armado{border-color:var(--alerta);color:var(--alerta);background:#FFF6E6}
+  .cobre{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+  #estado{font-size:13px;color:var(--azul);margin-left:auto;text-align:right;min-height:19px}
+
+  .folha{max-width:840px;margin:22px auto 60px;background:var(--papel);
+    padding:26px 30px 34px;box-shadow:0 2px 14px rgba(22,32,43,.14);font-size:12.5px}
+  .topo{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:16px}
+  .topo h2{margin:0;font-size:21px;color:var(--azul);letter-spacing:.01em}
+  .topo .sub{font-size:11.5px;color:var(--cinza);font-style:italic;margin-top:2px}
+  .placa{width:170px;border:1px solid var(--traco);flex:none}
+  .placa .rot{background:var(--azul);color:#fff;font-size:10px;font-weight:700;
+    letter-spacing:.14em;text-align:center;padding:2px}
+  .placa .val{text-align:center;font-size:18px;font-weight:700;letter-spacing:.12em;padding:7px 4px;min-height:36px}
+
+  table{width:100%;border-collapse:collapse}
+  td,th{border:1px solid var(--traco);padding:5px 8px;vertical-align:middle;font-size:12px;text-align:left}
+  th,td.rot{background:var(--realce);font-weight:700;font-size:11.5px}
+  td.st{width:38px}
+  td.vazio{height:20px}
+  .faixa{background:var(--azul);color:#fff;text-align:center;font-weight:700;font-size:12.5px;
+    letter-spacing:.1em;padding:4px;margin:16px 0 7px}
+  .nota{font-size:10.5px;color:var(--cinza);font-style:italic;margin:6px 0 0}
+  .assin{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:34px;text-align:center}
+  .assin .linha{border-top:1px solid var(--ink);margin-bottom:4px}
+  .assin b{font-size:12px}
+  .assin span{display:block;font-size:10.5px;color:var(--cinza)}
+  .declara{font-size:11.5px;text-align:justify;margin:10px 0 0}
+
+  .grade{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .quadro{border:1px solid var(--traco);display:flex;flex-direction:column;
+    min-height:200px;position:relative;background:#fff}
+  .quadro .rotulo{background:var(--realce);color:var(--azul);font-size:10px;font-weight:700;
+    letter-spacing:.07em;text-align:center;padding:3px;border-bottom:1px solid var(--traco)}
+  .quadro .rotulo input{width:100%;border:0;background:transparent;font:inherit;color:inherit;
+    text-align:center;font-weight:700;letter-spacing:.07em;padding:0}
+  .quadro .rotulo input:focus{outline:1px dashed var(--azul)}
+  .alvo{flex:1;display:flex;align-items:center;justify-content:center;position:relative;
+    padding:10px;text-align:center;color:var(--cinza);font-size:11px;min-height:150px;cursor:pointer}
+  .alvo:hover,.quadro.sobre .alvo{background:var(--realce);color:var(--azul)}
+  .alvo img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0;z-index:0}
+  .alvo .dica{position:relative;z-index:1;pointer-events:none}
+  .quadro.cheio .alvo .dica{display:none}
+  .carimbo{position:absolute;left:0;right:0;bottom:0;z-index:2;background:rgba(22,32,43,.72);
+    color:#fff;font-size:8.5px;letter-spacing:.02em;padding:3px 5px;text-align:left;line-height:1.3}
+  .alvo input[type=file]{position:absolute;inset:0;z-index:3;opacity:0;cursor:pointer;font-size:0}
+  .lixo{position:absolute;top:4px;right:4px;z-index:4;border:0;background:rgba(22,32,43,.72);
+    color:#fff;width:22px;height:22px;padding:0;border-radius:3px;font-size:14px;line-height:1;cursor:pointer}
+  .lixo:hover{background:var(--alerta)}
+  .mais{margin-top:9px}
+
+  @media (max-width:640px){
+    .grade{grid-template-columns:1fr 1fr}
+    .folha{padding:18px 16px 26px}
+    .topo{flex-direction:column}
+    .placa{width:100%}
+    #estado{margin-left:0;text-align:left}
+  }
+
+  @page{size:A4;margin:11mm}
+  @media print{
+    body{background:#fff}
+    .barra,.mais,.lixo,.nao-imprime{display:none !important}
+    .alvo input[type=file]{display:none}
+    .folha{max-width:none;margin:0;padding:0;box-shadow:none;font-size:11.5px}
+    .quadro.vazio{display:none}
+    .quadro{min-height:0;break-inside:avoid}
+    .alvo{min-height:0}
+    .quadro.cheio .alvo{min-height:44mm}
+    table,.assin{break-inside:avoid}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+
+<div class="barra">
+  <div class="barra-int">
+    <h1>Termo de vistoria — montar anexo</h1>
+    <p class="intro">Preencha o cabeçalho, coloque as fotos nos quadros e salve em PDF. O restante do formulário sai em branco, para preenchimento à mão.</p>
+
+    <p class="recado"><b>Abra este arquivo direto no navegador.</b> Dentro da pré-visualização do chat, o navegador bloqueia a seleção de arquivos e a impressão por segurança. Baixe o arquivo, dê dois cliques nele e tudo funciona normalmente.</p>
+
+    <div class="campos">
+      <div class="campo"><label for="f-placa">Placa</label><input id="f-placa" placeholder="ABC1D23"></div>
+      <div class="campo"><label for="f-contrato">Contrato n.º</label><input id="f-contrato" placeholder="opcional"></div>
+      <div class="campo"><label for="f-locatario">Locatário</label><input id="f-locatario" placeholder="opcional"></div>
+      <div class="campo"><label for="f-tipo">Vistoria</label>
+        <select id="f-tipo">
+          <option value="">— marcar à mão —</option>
+          <option value="ENTREGA">Entrega</option>
+          <option value="DEVOLUÇÃO">Devolução</option>
+        </select>
+      </div>
+      <div class="campo"><label for="f-data">Data e hora</label><input id="f-data" type="datetime-local"></div>
+      <div class="campo"><label for="f-km">KM</label><input id="f-km" placeholder="opcional"></div>
+    </div>
+
+    <div class="acoes">
+      <button type="button" class="btn principal" id="btn-imprimir">Salvar em PDF</button>
+      <label class="btn">Adicionar várias fotos<input type="file" class="cobre" id="entrada-lote" accept="image/*" multiple></label>
+      <button type="button" class="btn discreto" id="btn-quadro">Novo quadro</button>
+      <button type="button" class="btn discreto" id="btn-limpar">Limpar fotos</button>
+      <p id="estado"></p>
+    </div>
+  </div>
+</div>
+
+<div class="folha" id="folha">
+
+  <div class="topo">
+    <div>
+      <h2>TERMO DE VISTORIA DO VEÍCULO</h2>
+      <div class="sub">Anexo I ao Contrato de Locação de Automóvel para Uso em Aplicativos de Mobilidade</div>
+    </div>
+    <div class="placa">
+      <div class="rot">PLACA</div>
+      <div class="val" id="s-placa">&nbsp;</div>
+    </div>
+  </div>
+
+  <table>
+    <tr>
+      <td class="rot" style="width:15%">Contrato n.º</td><td style="width:35%" id="s-contrato"></td>
+      <td class="rot" style="width:15%">Locatário</td><td id="s-locatario"></td>
+    </tr>
+    <tr>
+      <td class="rot">Vistoria</td><td id="s-tipo">(&nbsp;&nbsp;) ENTREGA &nbsp;&nbsp; (&nbsp;&nbsp;) DEVOLUÇÃO</td>
+      <td class="rot">Data e hora</td><td id="s-data"></td>
+    </tr>
+    <tr>
+      <td class="rot">KM</td><td id="s-km"></td>
+      <td class="rot">Combustível</td><td>0/8&nbsp; 1/8&nbsp; 2/8&nbsp; 3/8&nbsp; 4/8&nbsp; 5/8&nbsp; 6/8&nbsp; 7/8&nbsp; 8/8</td>
+    </tr>
+  </table>
+
+  <div class="faixa">ITENS CONFERIDOS</div>
+  <table id="tab-itens"></table>
+  <p class="nota">Preencher OK (conforme) ou AV (avaria). Toda avaria deve ser descrita no campo Observações e fotografada.</p>
+
+  <table style="margin-top:10px">
+    <tr>
+      <td>Pneu dianteiro esquerdo</td><td class="st"></td>
+      <td>Pneu dianteiro direito</td><td class="st"></td>
+      <td style="color:#6B7784;font-style:italic;font-size:10.5px">Sulco mínimo: 1,6 mm</td>
+    </tr>
+    <tr>
+      <td>Pneu traseiro esquerdo</td><td class="st"></td>
+      <td>Pneu traseiro direito</td><td class="st"></td>
+      <td>Estepe</td>
+    </tr>
+  </table>
+
+  <div class="faixa">OBSERVAÇÕES E AVARIAS CONSTATADAS</div>
+  <table>
+    <tr><td class="vazio"></td></tr>
+    <tr><td class="vazio"></td></tr>
+    <tr><td class="vazio"></td></tr>
+  </table>
+  <p class="nota">Nada a constar: (&nbsp;&nbsp;)</p>
+
+  <div class="faixa">FOTOS DO VEÍCULO</div>
+  <div class="grade" id="grade"></div>
+  <button type="button" class="btn discreto mais nao-imprime" id="btn-quadro2">+ acrescentar quadro</button>
+  <p class="nota">Fotos com data e hora. Cada parte recebe uma via deste Termo.</p>
+
+  <div class="faixa">ASSINATURAS</div>
+  <p class="declara">O LOCATÁRIO declara que o VEÍCULO foi vistoriado nesta data em conjunto com a LOCADORA e que as condições aqui registradas, com as respectivas fotos, servirão de parâmetro para a vistoria de devolução (art. 569, IV, do Código Civil).</p>
+  <div class="assin">
+    <div><div class="linha"></div><b>LOCADORA</b><span>Vanessa Karpstein Franco — CPF 043.579.599-69</span></div>
+    <div><div class="linha"></div><b>LOCATÁRIO</b><span>Nome: ___________________ CPF: ______________</span></div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var grade = document.getElementById("grade");
+  var estado = document.getElementById("estado");
+  var relogio = null;
+  function avisar(txt, permanente){
+    estado.textContent = txt;
+    if(relogio) clearTimeout(relogio);
+    if(!permanente) relogio = setTimeout(function(){ estado.textContent = ""; }, 4000);
+  }
+
+  /* ---------- itens conferidos ---------- */
+  var ITENS = [
+    "Para-brisa sem avaria","Limpadores e palhetas","Água do reservatório do para-brisa",
+    "Nível de água do radiador","Nível do óleo do motor","Faróis e sinalizadores",
+    "Antena","Documento (CRLV) atualizado","Difusores de ar",
+    "Luzes do painel apagadas","Revisão em dia (km)","Buzina",
+    "Tapetes","Sem odores","Rádio / multimídia",
+    "Porta-luvas limpo","Retrovisores","Vidros e travas",
+    "Bancos e forração","Lataria e pintura","Para-choques",
+    "Chaves (____ un.)","Macaco e chave de roda","Triângulo"
+  ];
+  var tab = document.getElementById("tab-itens");
+  for (var i=0;i<ITENS.length;i+=3){
+    var tr = document.createElement("tr");
+    for (var j=0;j<3;j++){
+      var td = document.createElement("td");
+      td.textContent = ITENS[i+j] || "";
+      var st = document.createElement("td");
+      st.className = "st";
+      tr.appendChild(td); tr.appendChild(st);
+    }
+    tab.appendChild(tr);
+  }
+
+  /* ---------- cabeçalho espelhado ---------- */
+  function liga(idEntrada, idSaida, maiuscula){
+    var ent = document.getElementById(idEntrada);
+    var sai = document.getElementById(idSaida);
+    ent.addEventListener("input", function(){
+      var v = maiuscula ? ent.value.toUpperCase() : ent.value;
+      if(v) { sai.textContent = v; } else { sai.innerHTML = "&nbsp;"; }
+      carimbar();
+    });
+  }
+  liga("f-placa","s-placa",true);
+  liga("f-contrato","s-contrato",false);
+  liga("f-locatario","s-locatario",false);
+  liga("f-km","s-km",false);
+
+  document.getElementById("f-tipo").addEventListener("change", function(){
+    var v = this.value, alvo = document.getElementById("s-tipo");
+    alvo.innerHTML = v ? "(&nbsp;X&nbsp;) " + v : "(&nbsp;&nbsp;) ENTREGA &nbsp;&nbsp; (&nbsp;&nbsp;) DEVOLUÇÃO";
+  });
+
+  var campoData = document.getElementById("f-data");
+  try{
+    var agora = new Date();
+    agora.setMinutes(agora.getMinutes() - agora.getTimezoneOffset());
+    campoData.value = agora.toISOString().slice(0,16);
+  }catch(e){}
+
+  function zero(n){ n = String(n); return n.length < 2 ? "0" + n : n; }
+  function dataFormatada(){
+    if(!campoData.value) return "";
+    var d = new Date(campoData.value);
+    if(isNaN(d.getTime())) return "";
+    return zero(d.getDate())+"/"+zero(d.getMonth()+1)+"/"+d.getFullYear()+" "+zero(d.getHours())+":"+zero(d.getMinutes());
+  }
+  function espelharData(){
+    document.getElementById("s-data").textContent = dataFormatada();
+    carimbar();
+  }
+  campoData.addEventListener("input", espelharData);
+  campoData.addEventListener("change", espelharData);
+  espelharData();
+
+  /* ---------- quadros de foto ---------- */
+  var ROTULOS = ["ODÔMETRO (painel ligado)","FRENTE","TRASEIRA","LATERAL ESQUERDA",
+                 "LATERAL DIREITA","INTERIOR / BANCOS","PORTA-MALAS","AVARIA 1","AVARIA 2"];
+  var extras = 0;
+
+  function novoQuadro(rotulo){
+    var q = document.createElement("div");
+    q.className = "quadro vazio";
+
+    var cab = document.createElement("div");
+    cab.className = "rotulo";
+    var leg = document.createElement("input");
+    leg.type = "text";
+    leg.value = rotulo;
+    leg.setAttribute("aria-label","Legenda do quadro");
+    leg.addEventListener("input", carimbar);
+    cab.appendChild(leg);
+
+    var alvo = document.createElement("div");
+    alvo.className = "alvo";
+
+    var dica = document.createElement("span");
+    dica.className = "dica";
+    dica.textContent = "clique ou arraste a foto";
+    alvo.appendChild(dica);
+
+    var entrada = document.createElement("input");
+    entrada.type = "file";
+    entrada.accept = "image/*";
+    entrada.setAttribute("aria-label","Escolher foto para " + rotulo);
+    entrada.addEventListener("change", function(){
+      if(entrada.files && entrada.files[0]) colocar(q, entrada.files[0]);
+    });
+    alvo.appendChild(entrada);
+
+    q.addEventListener("dragover", function(e){ e.preventDefault(); q.classList.add("sobre"); });
+    q.addEventListener("dragleave", function(){ q.classList.remove("sobre"); });
+    q.addEventListener("drop", function(e){
+      e.preventDefault();
+      q.classList.remove("sobre");
+      var arq = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if(arq) colocar(q, arq);
+    });
+
+    q.appendChild(cab);
+    q.appendChild(alvo);
+    grade.appendChild(q);
+    return q;
+  }
+
+  ROTULOS.forEach(function(r){ novoQuadro(r); });
+
+  document.getElementById("entrada-lote").addEventListener("change", function(){
+    var arqs = Array.prototype.slice.call(this.files || []);
+    if(!arqs.length) return;
+    arqs.forEach(function(arq){
+      var livre = grade.querySelector(".quadro.vazio");
+      if(!livre){ extras++; livre = novoQuadro("FOTO " + (grade.children.length + 1)); }
+      // reserva o quadro na hora: a leitura da foto e assincrona e, sem isso,
+      // todas as fotos do lote cairiam no mesmo quadro
+      livre.classList.remove("vazio");
+      colocar(livre, arq);
+    });
+    this.value = "";
+    avisar(arqs.length + (arqs.length > 1 ? " fotos adicionadas." : " foto adicionada."));
+  });
+
+  function colocar(q, arquivo){
+    if(!arquivo.type || arquivo.type.indexOf("image/") !== 0){
+      limparQuadro(q);
+      avisar("Esse arquivo não é uma imagem. Use JPG ou PNG.", false);
+      return;
+    }
+    reduzir(arquivo).then(function(url){
+      var alvo = q.querySelector(".alvo");
+
+      var antiga = alvo.querySelector("img");
+      if(antiga) antiga.remove();
+      var img = document.createElement("img");
+      img.src = url;
+      img.alt = "";
+      alvo.insertBefore(img, alvo.firstChild);
+
+      if(!alvo.querySelector(".carimbo")){
+        var carimbo = document.createElement("div");
+        carimbo.className = "carimbo";
+        alvo.appendChild(carimbo);
+      }
+
+      if(!q.querySelector(".lixo")){
+        var lixo = document.createElement("button");
+        lixo.type = "button";
+        lixo.className = "lixo";
+        lixo.title = "Remover foto";
+        lixo.textContent = "\u00D7";
+        lixo.addEventListener("click", function(e){
+          e.stopPropagation();
+          e.preventDefault();
+          limparQuadro(q);
+        });
+        q.appendChild(lixo);
+      }
+
+      q.classList.remove("vazio");
+      q.classList.add("cheio");
+      carimbar();
+    })["catch"](function(){
+      limparQuadro(q);
+      avisar("Não consegui ler essa imagem. Tente outro arquivo.");
+    });
+  }
+
+  function limparQuadro(q){
+    var alvo = q.querySelector(".alvo");
+    var img = alvo.querySelector("img");
+    if(img) img.remove();
+    var carimbo = alvo.querySelector(".carimbo");
+    if(carimbo) carimbo.remove();
+    var lixo = q.querySelector(".lixo");
+    if(lixo) lixo.remove();
+    var ent = alvo.querySelector("input[type=file]");
+    if(ent) ent.value = "";
+    q.classList.remove("cheio");
+    q.classList.add("vazio");
+  }
+
+  /* reduz a foto para o PDF não ficar pesado demais */
+  function reduzir(arquivo){
+    var LADO = 1400;
+    return carregar(arquivo).then(function(fonte){
+      var lo = fonte.width || fonte.naturalWidth;
+      var al = fonte.height || fonte.naturalHeight;
+      var escala = Math.min(1, LADO / Math.max(lo, al));
+      var l = Math.round(lo * escala), a = Math.round(al * escala);
+      var cv = document.createElement("canvas");
+      cv.width = l; cv.height = a;
+      cv.getContext("2d").drawImage(fonte, 0, 0, l, a);
+      if(fonte.close) fonte.close();
+      return cv.toDataURL("image/jpeg", 0.82);
+    });
+  }
+
+  function viaImagem(arquivo){
+    return new Promise(function(ok, erro){
+      var fr = new FileReader();
+      fr.onload = function(){
+        var im = new Image();
+        im.onload = function(){ ok(im); };
+        im.onerror = function(){ erro(new Error("imagem inválida")); };
+        im.src = fr.result;
+      };
+      fr.onerror = function(){ erro(new Error("leitura falhou")); };
+      fr.readAsDataURL(arquivo);
+    });
+  }
+
+  function carregar(arquivo){
+    if(window.createImageBitmap){
+      try{
+        return createImageBitmap(arquivo, {imageOrientation:"from-image"})["catch"](function(){
+          return viaImagem(arquivo);
+        });
+      }catch(e){ /* segue abaixo */ }
+    }
+    return viaImagem(arquivo);
+  }
+
+  function carimbar(){
+    if(!grade) return;
+    var placa = document.getElementById("f-placa").value.toUpperCase();
+    var contrato = document.getElementById("f-contrato").value;
+    var partes = [];
+    var d = dataFormatada();
+    if(d) partes.push(d);
+    if(placa) partes.push("Placa " + placa);
+    if(contrato) partes.push("Contrato " + contrato);
+    var cauda = partes.join(" \u00B7 ");
+    Array.prototype.forEach.call(grade.querySelectorAll(".quadro.cheio"), function(q){
+      var leg = q.querySelector(".rotulo input").value;
+      var c = q.querySelector(".carimbo");
+      if(c) c.textContent = cauda ? leg + " \u2014 " + cauda : leg;
+    });
+  }
+
+  /* ---------- botões ---------- */
+  function acrescentar(){
+    extras++;
+    var q = novoQuadro("AVARIA " + (extras + 2));
+    q.querySelector(".rotulo input").focus();
+    q.scrollIntoView({block:"nearest"});
+  }
+  document.getElementById("btn-quadro").addEventListener("click", acrescentar);
+  document.getElementById("btn-quadro2").addEventListener("click", acrescentar);
+
+  var btnLimpar = document.getElementById("btn-limpar");
+  var armado = false, armadoRelogio = null;
+  btnLimpar.addEventListener("click", function(){
+    if(!grade.querySelector(".quadro.cheio")){ avisar("Não há fotos para remover."); return; }
+    if(!armado){
+      armado = true;
+      btnLimpar.textContent = "Confirmar remoção";
+      btnLimpar.classList.add("armado");
+      avisar("Clique de novo para remover todas as fotos.");
+      armadoRelogio = setTimeout(desarmar, 5000);
+      return;
+    }
+    Array.prototype.forEach.call(grade.querySelectorAll(".quadro.cheio"), limparQuadro);
+    desarmar();
+    avisar("Fotos removidas.");
+  });
+  function desarmar(){
+    armado = false;
+    btnLimpar.textContent = "Limpar fotos";
+    btnLimpar.classList.remove("armado");
+    if(armadoRelogio) clearTimeout(armadoRelogio);
+  }
+
+  document.getElementById("btn-imprimir").addEventListener("click", function(){
+    avisar("Se a janela de impressão não abrir, use Ctrl+P (ou Cmd+P) e escolha \u201CSalvar como PDF\u201D.", true);
+    try{ window.print(); }
+    catch(e){ avisar("Este navegador bloqueou a impressão aqui. Baixe o arquivo, abra fora do chat e use Ctrl+P.", true); }
+  });
+
+})();
+</script>
+</body>
+</html>
